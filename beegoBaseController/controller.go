@@ -22,29 +22,29 @@ type ErrMap map[error]string
 func InfoPrepend(s string) func(err error) string {
 	return func(err error) string { return fmt.Sprint(s, err) }
 }
-func (this *Base) CheckHtml(condition interface{}, code int, i interface{}, jmp ...string) {
+func (this *Base) CheckHtml(condition interface{}, code int, mapping interface{}, jmp ...string) {
 
 	switch condition.(type) {
 	case bool:
 		{
 			if !condition.(bool) {
 				this.Ctx.Output.Status = code
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						this.Data["error"] = i.(func() string)()
+						this.Data["error"] = mapping.(func() string)()
 					}
 				case error:
 					{
-						this.Data["error"] = i.(error).Error()
+						this.Data["error"] = mapping.(error).Error()
 					}
 				case string:
 					{
-						this.Data["error"] = i.(string)
+						this.Data["error"] = mapping.(string)
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						this.Data["error"] = "equation condition not meet"
 					}
 				default:
@@ -67,36 +67,36 @@ func (this *Base) CheckHtml(condition interface{}, code int, i interface{}, jmp 
 			err := condition.(error)
 			if err != nil {
 				this.Ctx.Output.Status = code
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						this.Data["error"] = i.(func() string)()
+						this.Data["error"] = mapping.(func() string)()
 					}
 				case func(error) string:
 					{
-						this.Data["error"] = i.(func(error) string)(err)
+						this.Data["error"] = mapping.(func(error) string)(err)
 					}
 				case func(error):
 					{
-						i.(func(error))(err)
+						mapping.(func(error))(err)
 						this.Data["error"] = err.Error()
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						this.Data["error"] = err.Error()
 					}
 				case error:
 					{
-						this.Data["error"] = i.(error).Error()
+						this.Data["error"] = mapping.(error).Error()
 					}
 				case string:
 					{
-						this.Data["error"] = i.(string)
+						this.Data["error"] = mapping.(string)
 					}
 				case map[error]string:
 					{
-						m := i.(map[error]string)
+						m := mapping.(map[error]string)
 						es, ok := m[err]
 						if ok {
 							this.Data[`error`] = es
@@ -107,7 +107,7 @@ func (this *Base) CheckHtml(condition interface{}, code int, i interface{}, jmp 
 					}
 				case ErrMap:
 					{
-						m := i.(ErrMap)
+						m := mapping.(ErrMap)
 						es, ok := m[err]
 						if ok {
 							this.Data[`error`] = es
@@ -141,8 +141,8 @@ func (this *Base) CheckHtml(condition interface{}, code int, i interface{}, jmp 
 	}
 
 }
-func (this *Base) OkHtml(i interface{}, jmp ...string) {
-	this.Data[`info`] = i
+func (this *Base) OkHtml(info interface{}, jmp ...string) {
+	this.Data[`info`] = info
 	if len(jmp) != 0 {
 		this.Data[`jump`] = jmp[0]
 	}
@@ -150,7 +150,7 @@ func (this *Base) OkHtml(i interface{}, jmp ...string) {
 	this.Render()
 }
 
-func (this *Base) CheckJson(condition interface{}, code int, i interface{}) {
+func (this *Base) CheckJson(condition interface{}, code int, mapping interface{}) {
 
 	switch condition.(type) {
 	case bool:
@@ -158,22 +158,22 @@ func (this *Base) CheckJson(condition interface{}, code int, i interface{}) {
 			if !condition.(bool) {
 				this.Ctx.Output.Status = code
 
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						this.Data["json"] = i.(func() string)()
+						this.Data["json"] = mapping.(func() string)()
 					}
 				case error:
 					{
-						this.Data["json"] = i.(error).Error()
+						this.Data["json"] = mapping.(error).Error()
 					}
 				case string:
 					{
-						this.Data["json"] = i.(string)
+						this.Data["json"] = mapping.(string)
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						this.Data["json"] = "equation condition not meet"
 					}
 				default:
@@ -192,36 +192,36 @@ func (this *Base) CheckJson(condition interface{}, code int, i interface{}) {
 			err := condition.(error)
 			if err != nil {
 				this.Ctx.Output.Status = code
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						this.Data["json"] = i.(func() string)()
+						this.Data["json"] = mapping.(func() string)()
 					}
 				case func(error) string:
 					{
-						this.Data["json"] = i.(func(error) string)(err)
+						this.Data["json"] = mapping.(func(error) string)(err)
 					}
 				case func(error):
 					{
-						i.(func(error))(err)
+						mapping.(func(error))(err)
 						this.Data["json"] = err.Error()
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						this.Data["json"] = err.Error()
 					}
 				case error:
 					{
-						this.Data["json"] = i.(error).Error()
+						this.Data["json"] = mapping.(error).Error()
 					}
 				case string:
 					{
-						this.Data["json"] = i.(string)
+						this.Data["json"] = mapping.(string)
 					}
 				case map[error]string:
 					{
-						m := i.(map[error]string)
+						m := mapping.(map[error]string)
 						es, ok := m[err]
 						if ok {
 							this.Data[`json`] = es
@@ -232,7 +232,7 @@ func (this *Base) CheckJson(condition interface{}, code int, i interface{}) {
 					}
 				case ErrMap:
 					{
-						m := i.(ErrMap)
+						m := mapping.(ErrMap)
 						es, ok := m[err]
 						if ok {
 							this.Data[`json`] = es
@@ -261,11 +261,11 @@ func (this *Base) CheckJson(condition interface{}, code int, i interface{}) {
 	}
 
 }
-func (this *Base) OkJson(i interface{}) {
-	this.Data[`json`] = i
+func (this *Base) OkJson(info interface{}) {
+	this.Data[`json`] = info
 	this.ServeJson()
 }
-func (this *Base) CheckFlash(condition interface{}, i interface{}, to string) {
+func (this *Base) CheckFlash(condition interface{}, mapping interface{}, to string) {
 	flash := beego.NewFlash()
 
 	switch condition.(type) {
@@ -273,22 +273,22 @@ func (this *Base) CheckFlash(condition interface{}, i interface{}, to string) {
 		{
 			if !condition.(bool) {
 
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						flash.Error(i.(func() string)())
+						flash.Error(mapping.(func() string)())
 					}
 				case error:
 					{
-						flash.Error(i.(error).Error())
+						flash.Error(mapping.(error).Error())
 					}
 				case string:
 					{
-						flash.Error(i.(string))
+						flash.Error(mapping.(string))
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						flash.Error("equation condition not meet")
 					}
 				default:
@@ -309,36 +309,36 @@ func (this *Base) CheckFlash(condition interface{}, i interface{}, to string) {
 
 			if err != nil {
 
-				switch i.(type) {
+				switch mapping.(type) {
 				case func() string:
 					{
-						flash.Error(i.(func() string)())
+						flash.Error(mapping.(func() string)())
 					}
 				case func(error) string:
 					{
-						flash.Error(i.(func(error) string)(err))
+						flash.Error(mapping.(func(error) string)(err))
 					}
 				case func():
 					{
-						i.(func())()
+						mapping.(func())()
 						flash.Error(err.Error())
 					}
 				case func(error):
 					{
-						i.(func(error))(err)
+						mapping.(func(error))(err)
 						flash.Error(err.Error())
 					}
 				case error:
 					{
-						flash.Error(i.(error).Error())
+						flash.Error(mapping.(error).Error())
 					}
 				case string:
 					{
-						flash.Error(i.(string))
+						flash.Error(mapping.(string))
 					}
 				case map[error]string:
 					{
-						m := i.(map[error]string)
+						m := mapping.(map[error]string)
 						es, ok := m[err]
 						if ok {
 							flash.Error(es)
@@ -349,7 +349,7 @@ func (this *Base) CheckFlash(condition interface{}, i interface{}, to string) {
 					}
 				case ErrMap:
 					{
-						m := i.(ErrMap)
+						m := mapping.(ErrMap)
 						es, ok := m[err]
 						if ok {
 							flash.Error(es)
@@ -378,9 +378,9 @@ func (this *Base) CheckFlash(condition interface{}, i interface{}, to string) {
 	}
 
 }
-func (this *Base) OkFlash(i interface{}, to string) {
+func (this *Base) OkFlash(info interface{}, to string) {
 	flash := beego.NewFlash()
-	flash.Notice(fmt.Sprint(i))
+	flash.Notice(fmt.Sprint(info))
 	flash.Store(&this.Controller)
 	this.Redirect(to, 302)
 }
