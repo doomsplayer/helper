@@ -385,9 +385,9 @@ func (this *Base) OkFlash(info interface{}, to string) {
 	this.Redirect(to, 302)
 }
 
-func (this *Base) ParseFormAndValidCheckJson(form interface{}, f interface{}) {
+func (this *Base) ParseFormAndValidCheckJson(form interface{}, mapping interface{}) {
 	err := this.ParseFormAndValid(form)
-	this.CheckJson(err, 400, f)
+	this.CheckJson(err, 400, mapping)
 }
 
 func (this *Base) ParseFormAndValid(form interface{}) (err error) {
