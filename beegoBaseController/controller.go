@@ -1,6 +1,7 @@
 package beegoBaseController
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
@@ -17,11 +18,18 @@ type Base struct {
 	beego.Controller
 }
 
+func (this *Base) ParseJson(obj *interface{}) (err error) {
+	dec := json.NewDecoder(this.Ctx.Input.Request.Body)
+	err = dec.Decode(obj)
+	return
+}
+
 type ErrMap map[error]string
 
 func InfoPrepend(s string) func(err error) string {
 	return func(err error) string { return fmt.Sprint(s, err) }
 }
+
 func (this *Base) CheckHtml(condition interface{}, code int, mapping interface{}, jmp ...string) {
 
 	switch condition.(type) {
