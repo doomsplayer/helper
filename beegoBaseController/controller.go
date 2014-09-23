@@ -18,7 +18,7 @@ type Base struct {
 	beego.Controller
 }
 
-func (this *Base) ParseJson(obj *interface{}) (err error) {
+func (this *Base) ParseJson(obj interface{}) (err error) {
 	dec := json.NewDecoder(this.Ctx.Input.Request.Body)
 	err = dec.Decode(obj)
 	return
