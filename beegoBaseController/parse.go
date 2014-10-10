@@ -71,7 +71,7 @@ func (this *Base) ParseQuery(field string) *orm.Condition {
 			}
 		case '~':
 			{
-				cond = cond.AndNot(field+"__icontains", entity[1:])
+				cond = cond.OrNot(field+"__icontains", entity[1:])
 			}
 		}
 	}
