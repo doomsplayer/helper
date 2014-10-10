@@ -6,6 +6,7 @@ import (
 )
 
 func (this *Base) CheckBaseAuth(cred string) bool {
+	this.Ctx.Output.Header("WWW-Authenticate", `Basic realm="Authenticate"`)
 	s := strings.SplitN(this.Ctx.Input.Header("Authorization"), " ", 2)
 	if len(s) != 2 {
 		return false
