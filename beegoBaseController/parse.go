@@ -59,11 +59,11 @@ func (this *Base) ParseQuery(fields ...string) *orm.Condition {
 
 		if len(entity) != 0 {
 			switch entity[0] {
-			case '+':
+			case '*':
 				{
 					cond = cond.And(v+"__icontains", entity[1:])
 				}
-			case '*':
+			case '?':
 				{
 					cond = cond.Or(v+"__icontains", entity[1:])
 				}
