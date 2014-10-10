@@ -52,28 +52,32 @@ func (this *Base) GetInts(field string) []int {
 	}
 	return retv
 }
-func (this *Base) ParseQuery(field string) *orm.Condition {
-	entity := this.GetString("q" + field)
+func (this *Base) ParseQuery(fields ...string) *orm.Condition {
 	cond := orm.NewCondition()
-	if len(entity) != 0 {
-		switch entity[0] {
-		case '+':
-			{
-				cond = cond.And(field+"__icontains", entity[1:])
-			}
-		case '*':
-			{
-				cond = cond.Or(field+"__icontains", entity[1:])
-			}
-		case '!':
-			{
-				cond = cond.AndNot(field+"__icontains", entity[1:])
-			}
-		case '~':
-			{
-				cond = cond.OrNot(field+"__icontains", entity[1:])
+	for _, v := range fields {
+		entity := this.GetString("q" + v)
+
+		if len(entity) != 0 {
+			switch entity[0] {
+			case '+':
+				{
+					cond = cond.And(v+"__icontains", entity[1:])
+				}
+			case '*':
+				{
+					cond = cond.Or(v+"__icontains", entity[1:])
+				}
+			case '!':
+				{
+					cond = cond.AndNot(v+"__icontains", entity[1:])
+				}
+			case '~':
+				{
+					cond = cond.OrNot(v+"__icontains", entity[1:])
+				}
 			}
 		}
 	}
+
 	return cond
 }
