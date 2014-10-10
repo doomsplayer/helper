@@ -56,10 +56,23 @@ func (this *Base) ParseQuery(field string) *orm.Condition {
 	entity := this.GetString("q" + field)
 	cond := orm.NewCondition()
 	if len(entity) != 0 {
-		if entity[0] == '!' {
-			cond = cond.And(field+"__icontains", entity[1:])
-		} else if field[0] == '?' {
-			cond = cond.Or(field+"__icontains", entity[1:])
+		switch entity[0] {
+		case '+':
+			{
+				cond = cond.And(field+"__icontains", entity[1:])
+			}
+		case '*':
+			{
+				cond = cond.Or(field+"__icontains", entity[1:])
+			}
+		case '!':
+			{
+				cond = cond.AndNot(field+"__icontains", entity[1:])
+			}
+		case '~':
+			{
+				cond = cond.AndNot(field+"__icontains", entity[1:])
+			}
 		}
 	}
 	return cond
